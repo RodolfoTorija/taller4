@@ -13,6 +13,19 @@ def index_inicio():
 def especialidades():
     return render_template("especialidades.html")
 
+@app.route('/servicios.html')
+def servicios():
+    return render_template("servicios.html")
+
+
+@app.route('/quienessomos.html')
+def quienessomos():
+    return render_template("quienessomos.html")
+
+@app.route('/contactanos.html')
+def contactanos():
+    return render_template("contactanos.html")
+
 
 
 if __name__ == "__main__":
