@@ -1,5 +1,35 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+import mysql.connector
+
+
 app = Flask(__name__)
+
+mydb = mysql.connector.connect(
+    host = "localhost",
+    port ="3306",
+    user= "root",
+    password = "Zeromainj0.",
+    database = "clinica_azul"
+)
+
+@app.route('/verificar', methods = ['POST'])
+def verificar():
+    nombre = request.form['nombreusuario']
+    contrasena = request.form['contrasena']
+
+    mycursor = mydb.cursor()
+
+    mycursor.execute("SELECT * FROM usuarios WHERE nombre = %s AND contrasena = %s", (nombre, contrasena))
+
+    usuario = mycursor.fetchone()
+
+    if usuario:
+        return "Inicio de sesión exitoso"
+    else:
+        return "Nombre de usuario o contraseña incorrectos"
+
+    
+
 
 @app.route("/")
 def index():
@@ -27,6 +57,6 @@ def contactanos():
     return render_template("contactanos.html")
 
 
+if __name__ == '__main__':
+    app.run()
 
-if __name__ == "__main__":
-    app.run(port=4000, host="0.0.0.0")
