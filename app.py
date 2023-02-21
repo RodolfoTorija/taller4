@@ -1,39 +1,69 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
+from flask_mysqldb import MySQL
 
 
 app = Flask(__name__)
 
-mydb = mysql.connector.connect(
-    host = "localhost",
-    port ="3306",
-    user= "root",
-    password = "Zeromainj0.",
-    database = "clinica_azul"
-)
 
-@app.route('/verificar', methods = ['POST'])
-def verificar():
-    nombre = request.form['nombreusuario']
-    contrasena = request.form['contrasena']
 
-    mycursor = mydb.cursor()
+# Configuración de la base de datos
+...
 
-    mycursor.execute("SELECT * FROM usuarios WHERE nombre = %s AND contrasena = %s", (nombre, contrasena))
 
-    usuario = mycursor.fetchone()
+try:
+    mydb = mysql.connector.connect(
+        host = "localhost",
+        port = "3306",
+        user= "root",
+        password = "Zeromainj0.",
+        database = "clinica_azul"
+    )
 
-    if usuario:
-        return "Inicio de sesión exitoso"
-    else:
-        return "Nombre de usuario o contraseña incorrectos"
+    print("Conexión exitosa a la base de datos. \n")
 
-    
+except mysql.connector.Error as error:
+    print("Error al conectarse a la base de datos: {}".format(error))
+    mydb = None
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+#Conexion de base de datos
+@app.route('/verificar', methods = ['POST'])
+def verificar():
+    if mydb is None:
+        return render_template('index.html', mensaje='Error al conectarse a la base de datos')
+
+    nombre = request.form['nombreusuario']
+    contrasena = request.form['contrasena']
+
+    try:
+        mycursor = mydb.cursor()
+
+        mycursor.execute("SELECT * FROM usuarios WHERE nombre = %s AND contrasena = %s", (nombre, contrasena))
+
+        usuario = mycursor.fetchone()
+
+        if usuario:
+            # Inicio de sesión exitoso
+            return redirect(url_for('index.html'))
+        else:
+            # Nombre de usuario o contraseña incorrectos
+            return render_template('index.html', mensaje='Nombre de usuario o contraseña incorrectos')
+
+    except mysql.connector.Error as error:
+        print("Error al ejecutar la consulta a la base de datos: {}".format(error))
+        return render_template('index.html', mensaje='Error al ejecutar la consulta a la base de datos')
+
+
+
+
+
+
 
 @app.route('/index.html')
 def index_inicio():
