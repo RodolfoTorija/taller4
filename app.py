@@ -55,7 +55,7 @@ except mysql.connector.Error as error:
     mydb = None
 
 #Conexion de base de datos
-@app.route('/verificar', methods = ['GET','POST'])
+@app.route('/index.html', methods = ['GET','POST'])
 def verificar():
     if mydb is None:
         return render_template('/index.html', mensaje='Error al conectarse a la base de datos')
