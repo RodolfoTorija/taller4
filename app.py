@@ -10,6 +10,7 @@ app = Flask(__name__)
 
 
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -73,7 +74,7 @@ def verificar():
         if usuario:
             print("Inicio correctametne")
             # Inicio de sesión exitoso
-            return render_template('/index.html')
+            return render_template('/index.html', correcto='Has iniciado sesión correctamente')
         else:
             print("No se inicio correctamente")
             # Nombre de usuario o contraseña incorrectos
