@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import mysql.connector
 from flask_mysqldb import MySQL
 from jinja2 import Template
@@ -36,6 +36,10 @@ def quienessomos():
 def contactanos():
     return render_template("contactanos.html")
 
+@app.route('/index_logueado.html')
+def logeuado():
+    return render_template("index_logueado.html")
+
 # Configuración de la base de datos
 ...
 
@@ -56,7 +60,7 @@ except mysql.connector.Error as error:
     mydb = None
 
 #Conexion de base de datos
-@app.route('/index.html', methods = ['GET','POST'])
+@app.route('/', methods = ['GET','POST'])
 def verificar():
     if mydb is None:
         return render_template('/index.html', mensaje='Error al conectarse a la base de datos')
@@ -73,8 +77,11 @@ def verificar():
 
         if usuario:
             print("Inicio correctametne")
+            
+            #alerta con flash
+           
             # Inicio de sesión exitoso
-            return render_template('/index.html', correcto='Has iniciado sesión correctamente')
+            return render_template('/index_logueado.html', correcto='Has iniciado sesión correctamente')
         else:
             print("No se inicio correctamente")
             # Nombre de usuario o contraseña incorrectos
